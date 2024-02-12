@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <script src="lessons.js"></script>
+    <title>CourseWork 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>{{sitename}}</h1>
+            <button v-on:click="showCheckout">{{cartItemCount}} <span>Cart</span></button>
+        </header>
+        <div v-if="showLesson">
+            <div class="main-container">
+                <div class="content-container">
+                    <div class="search">
+                        <input  type="search" v-model="searchQuery" name="search" id="search" placeholder="Search">
+                    </div>
+                    <div class="sortBy">
+                        <p>
+                            <input type="radio" v-model="sortBy" id="lesson" value="lesson">
+                            <label for="lesson">Lesson</label>
+                        </p>
+                        <p>
+                            <input type="radio" v-model="sortBy" id="location" value="location">
+                            <label for="location">Location</label>
+                        </p>
+                        <p>
+                            <input type="radio" v-model="sortBy" id="price" value="price">
+                            <label for="price">Price</label>
+                        </p>
+                        <p>
+                            <input type="radio" v-model="sortBy" id="spaces" value="spaces">
+                            <label for="spaces">Spaces</label>
+                        </p>
+                    </div>
+                    <div class="orderBy">
+                        <p>
+                            <input type="radio" v-model="sortOrder" id="ascending" value="asc">
+                            <label for="ascending">Ascending</label>
+                        </p>
+                        <p>
+                            <input type="radio" v-model="sortOrder" id="decending" value="desc">
+                            <label for="decending">Descending</label>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-container" >              
+                        <div class="container" v-for="lesson in sortedProducts" >
+                            <img v-bind:src="lesson.image" alt="" height="200px">
+                            <h3>Lesson: {{lesson.lesson}}</h3>
+                            <p>Location: {{lesson.location}}</p>
+                            <p>Price: {{lesson.price}}</p>
+                            <h4>Spaces: {{lesson.spaces - cartCount(lesson.id)}}</h4>
+                            <button v-on:click="addToCart(lesson)" v-if="canAddToCart(lesson)">Add to Cart</button>
+                            <button disabled='disabled' v-else="canAddToCart(lesson)">Add to cart</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div v-else="showLesson">
+            <h1>Check Out Page</h1>
+            <div class="flex-container">
+                <div class="container" v-for="(lessonId, index) in cart" :key="index">
+                    <img v-bind:src="getLessonDetails(lessonId).image" alt="" height="200px">
+                    <h3>Lesson: {{getLessonDetails(lessonId).lesson}}</h3>
+                    <p>Location: {{getLessonDetails(lessonId).location}}</p>
+                    <p>Price: {{getLessonDetails(lessonId).price}}</p>    
+                    <button v-on:click="removeFromCart(index)">Remove</button>
+                </div>
+            </div>
+            <div class="form-container">
+                <p class="form-group">
+                    <strong>Full Name:</strong>
+                    <input v-model="order.name" />
+                </p>
+                <p class="form-group">
+                    <strong>Phone Number:</strong>
+                    <input v-model.number="order.number" type="number" />
+                </p>
+                <button :disabled="!canCheckOut" v-on:click="submitForm">Place Order</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
